@@ -48,7 +48,7 @@
 			}
 		</style>
 		<script type="text/javascript">
-			function write(el, str, timeout, callInit, callback) {
+			function write(el, str, timeout, speed, callInit, callback) {
 				var position = 0;
 				setTimeout(function() {
 					if(typeof(callInit) == 'function')
@@ -56,43 +56,42 @@
 
 					var idInterval = setInterval(function() {
 						var char = str[position] == '\n' ? '<br>' : str[position];
-						el.innerHTML += `${char}`;
+						el.innerHTML += `<span>${char}</span>`;
+						el.children[el.children]
 						position++;
 						if(position == str.length) {
 							clearInterval(idInterval);
 							if(typeof(callback) == 'function')
 								callback();
 						}
-					}, 75);
+					}, speed || 75);
 				}, timeout);
 			}
 
-			function erase(el, size, timeout, callback) {
+			function erase(el, size, timeout, speed, callback) {
 				var amountErase = 0;
 				setTimeout(function() {
 					var idInterval = setInterval(function() {
-						el.innerHTML = el.innerHTML.slice(0, -1);
-
+						el.children[(el.children.length - 1)].remove();
+						amountErase++;
 						if(amountErase == size) {
 							clearInterval(idInterval);
 							if(callback && typeof(callback) == 'function')
 								callback();
 						}
-						amountErase++;
-					}, 75);
-
+					}, speed || 75);
 				}, timeout);
 			}
 
 			function writeListText(el, objStr, callInit, callback, position) {
 				position = position ? position : 0;
 
-				write(el, objStr[position].text, objStr[position].timeout, callInit, function() {
+				write(el, objStr[position].text, objStr[position].timeout, objStr[position].speed, callInit, function() {
 					var objErase = objStr[position].erase || null;
 
 					callback();
 					if(objErase) {
-						erase(el, objErase.size, objErase.timeout, function() {
+						erase(el, objErase.size, objErase.timeout, objErase.speed, function() {
 							position++;
 							if(objStr[position])
 								writeListText(el, objStr, callInit, callback, position);
@@ -110,8 +109,13 @@
 				var el = document.getElementById('txt'),
 					objStr = [
 						{text: 'Olá! ', timeout: 500},
-						{text: 'Eu sou o Kaio', timeout: 1000},
-						{text: ' e este é o meu currículo!', timeout: 1000, erase: {size: 10, timeout: 100}}
+						{text: 'Eu sou o Kaio', timeout: 1000, erase: {size: 18, timeout: 100, speed: 50}},
+						{text: ' MENTIRA!', timeout: 0, speed: 40},
+						{text: ' Sou o Diego!', timeout: 1000, speed: 60},
+						{text: ' O MAIS LINDO!', timeout: 1000},
+						{text: ' E este é o meu currículo!', timeout: 1000},
+						{text: ' Maravilhoso!', timeout: 1000, speed: 30, erase: {size: 12, timeout: 100, speed: 20}},
+						{text: 'PERFEITO!', timeout: 0, speed: 20}
 					];
 				
 				writeListText(el, objStr,
