@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Kaio Henrique de Melo Chiarato</title>
+		<style type="text/css">
+			@-webkit-keyframes pointer-animation {
+				from { opacity: 0; }
+				to { opacity: 1; }
+			} 
+
+			@keyframes pointer-animation {
+				from { opacity: 0; }
+				to { opacity: 1; }
+			}
+
+			html,
+			body {
+				width: 100%;
+				height: 100%;
+				background-color: #000000;
+				margin: 0px !important;
+				color: green;
+			}
+
+			* {
+				outline: none !important;
+			}
+
+			#cmd {
+				padding: 15px;
+				font-family: 'Consolas';
+			}
+
+			#pointer {
+				padding: 0px;
+				margin-left: -10px;
+			}
+
+			#pointer.animation {
+				-webkit-animation: pointer-animation 1s infinite;
+				animation: pointer-animation 1s infinite;
+			}
+		</style>
+		<script type="text/javascript">
+			function write(el, str, timeout, callInit, callback) {
+				var position = 0;
+				setTimeout(function() {
+					if(typeof(callInit) == 'function')
+						callInit();
+
+					var idInterval = setInterval(function() {
+						var char = str[position] == '\n' ? '<br>' : str[position];
+						el.innerHTML += `${char}`;
+						position++;
+						if(position == str.length) {
+							clearInterval(idInterval);
+							if(typeof(callback) == 'function')
+								callback();
+						}
+					}, 50);
+				}, timeout);
+			}
+
+			window.onload = function() {
+				var el = document.getElementById('txt');
+				write(el, 'Olá! Eu sou o Kaio e este é o meu currículo!', 3000,
+					function() {
+						document.getElementById('pointer').classList.remove('animation');
+					},
+					function() {
+						document.getElementById('pointer').classList.add('animation');				
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<main>
+			<article id="cmd">
+				<span>k.h></span>
+				<span id="txt"></span>
+				<span id="pointer" class="animation">▍</span>
+			</article>	
+		</main>
+	</body>
+</html>
