@@ -47,23 +47,104 @@
 			}
 		</style>
 		<script type="text/javascript">
+
+			//@\color(#000000)\font-size(1){};
+
+			function getToken(content, index) {
+				var token = "";
+				do {
+					token += content[index];
+					index++;
+				} while (content[index] != "(" && content[index] != "\\" && content[index] != "{");
+				return { strToken : token, indexEnd : index - 1};
+			}
+
+			function getParameter(content, index) {
+				var token = "";
+				index++;
+				if (content[index] == "("){
+					do {
+						token += content[index];
+						index++;
+					} while (content[index] != ")");
+					return { strToken : token.substring(1), indexEnd : index};	
+				}
+
+				console.error("Erro de sintaxe");				
+			}
+
+			function getContent(content, index) {
+				var token = "";
+				index++;
+				if (content[index] == "{"){
+					do {
+						token += content[index];
+						index++;
+					} while (content[index] != "}");
+					return { strToken : token.substring(1), indexEnd : index};	
+				}
+
+				console.error("Erro de sintaxe");					
+			}
+
+			
+
+			function newProp() {
+				return {color : stackProperties[0].color};
+			}
+
+			function parser(content, index){
+				var p = new newProp();							
+				var token = getToken(content, index);
+				if (token.strToken = "\\color") {
+					var parameter = getParameter(content, token.indexEnd);					
+					p.color = parameter.strToken;
+				}
+
+				var conteudo = getContent(content, parameter.indexEnd);
+
+				return {Content : conteudo,  Position : conteudo.indexEnd + 1, Prop : p};
+			}
+
+			function addStack(prop, indexEndStack) {
+				stackProperties.unshift(prop);
+				stack.unshift(indexEndStack);
+			}
+
 			function write(el, str, timeout, callInit, callback) {
 				var position = 0;
 				setTimeout(function() {
 					if(typeof(callInit) == 'function')
 						callInit();
 
-					var idInterval = setInterval(function() {
+					var idInterval = setInterval(function() {					
+						if (str[position] == "@"){
+							var parsed = parser(str, position + 1);													
+							var comando = str.substr(position, parsed.Position - position);
+							str = str.replace(comando, parsed.Content.strToken);	
+							addStack(parsed.Prop, parsed.Content.strToken.length +  position);
+						}
+
 						var char = str[position] == '\n' ? '<br>' : str[position];
 						el.innerHTML += `${char}`;
+
+						if (stack.length > 0) {
+							if (stack[0] == position){
+								stackProperties.shift();
+								stack.shift();
+							}
+						}
+
 						position++;
 						if(position == str.length) {
 							clearInterval(idInterval);
 							if(typeof(callback) == 'function')
 								callback();
 						}
-					}, 75);
+					}, 80);
 				}, timeout);
+
+				return position;
 			}
 
 			function writeListText(el, objStr, callInit, callback, position) {
@@ -77,10 +158,17 @@
 				});
 			}
 
+			var stack = [];
+			var stackProperties = [];
+
+
 			window.onload = function() {
+
+				stackProperties.unshift({color : "green"});
+
 				var el = document.getElementById('txt'),
 					objStr = [
-						{text: 'Olá! ', timeout: 500},
+						{text: 'Olá! @\\color(#000000){Kaio Henrique de Melo Chiarato} Blah blah blah', timeout: 500},
 						{text: 'Eu sou o Kaio', timeout: 1000},
 						{text: ' e este é o meu currículo!', timeout: 1000}
 					];
