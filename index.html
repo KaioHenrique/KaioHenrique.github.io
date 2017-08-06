@@ -54,17 +54,9 @@
 					if(typeof(callInit) == 'function')
 						callInit();
 
-					var idInterval = setInterval(function() {					
-						if (str[position] == "@"){
-							var parsed = parser(str, position + 1);													
-							var comando = str.substr(position, parsed.Position - position);
-							str = str.replace(comando, parsed.Content.strToken);	
-							addStack(parsed.Prop, parsed.Content.strToken.length +  position);
-						}
-
+					var idInterval = setInterval(function() {
 						var char = str[position] == '\n' ? '<br>' : str[position];
 						el.innerHTML += `<span>${char}</span>`;
-						el.children[el.children]
 						position++;
 						if(position == str.length) {
 							clearInterval(idInterval);
@@ -73,8 +65,6 @@
 						}
 					}, speed || 75);
 				}, timeout);
-
-				return position;
 			}
 
 			function erase(el, size, timeout, speed, callback) {
@@ -114,19 +104,17 @@
 				});
 			}
 
-			var stack = [];
-			var stackProperties = [];
-
-
 			window.onload = function() {
-
-				stackProperties.unshift({color : "green"});
-
 				var el = document.getElementById('txt'),
 					objStr = [
-						{text: 'Olá! @\\color(#000000){Kaio Henrique de Melo Chiarato} Blah blah blah', timeout: 500},
-						{text: 'Eu sou o Kaio', timeout: 1000},
-						{text: ' e este é o meu currículo!', timeout: 1000}
+						{text: 'Olá! ', timeout: 500},
+						{text: 'Eu sou o Kaio', timeout: 1000, erase: {size: 18, timeout: 100, speed: 50}},
+						{text: ' MENTIRA!', timeout: 0, speed: 40},
+						{text: ' Sou o Diego!', timeout: 1000, speed: 60},
+						{text: ' O MAIS LINDO!', timeout: 1000},
+						{text: ' E este é o meu currículo!', timeout: 1000},
+						{text: ' Maravilhoso!', timeout: 1000, speed: 30, erase: {size: 12, timeout: 100, speed: 20}},
+						{text: 'PERFEITO!', timeout: 0, speed: 20}
 					];
 				
 				writeListText(el, objStr,
