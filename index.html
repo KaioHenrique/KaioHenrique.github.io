@@ -29,11 +29,16 @@
 			#cmd {
 				padding: 15px;
 				font-family: 'Consolas';
+				font-size: 0;
+			}
+
+			#txt, #pointer {
+				font-size: 11pt;
 			}
 
 			#pointer {
 				padding: 0px;
-				margin-left: -10px;
+				
 			}
 
 			#pointer.animation {
@@ -57,7 +62,7 @@
 							if(typeof(callback) == 'function')
 								callback();
 						}
-					}, 50);
+					}, 75);
 				}, timeout);
 			}
 
@@ -76,7 +81,7 @@
 	<body>
 		<main>
 			<article id="cmd">
-				<span>k.h></span>
+				<span>k</span>
 				<span id="txt"></span>
 				<span id="pointer" class="animation">▍</span>
 			</article>	
