@@ -18,6 +18,7 @@
 				width: 100%;
 				height: 100%;
 				background-color: #000000;
+				font-size: 16px;
 				margin: 0px !important;
 				color: green;
 			}
@@ -32,8 +33,8 @@
 				font-size: 0;
 			}
 
-			#txt, #pointer {
-				font-size: 11pt;
+			#cmd > * {
+				font-size: 1rem;
 			}
 
 			#pointer {
@@ -47,71 +48,7 @@
 			}
 		</style>
 		<script type="text/javascript">
-
-			//@\color(#000000)\font-size(1){};
-
-			function getToken(content, index) {
-				var token = "";
-				do {
-					token += content[index];
-					index++;
-				} while (content[index] != "(" && content[index] != "\\" && content[index] != "{");
-				return { strToken : token, indexEnd : index - 1};
-			}
-
-			function getParameter(content, index) {
-				var token = "";
-				index++;
-				if (content[index] == "("){
-					do {
-						token += content[index];
-						index++;
-					} while (content[index] != ")");
-					return { strToken : token.substring(1), indexEnd : index};	
-				}
-
-				console.error("Erro de sintaxe");				
-			}
-
-			function getContent(content, index) {
-				var token = "";
-				index++;
-				if (content[index] == "{"){
-					do {
-						token += content[index];
-						index++;
-					} while (content[index] != "}");
-					return { strToken : token.substring(1), indexEnd : index};	
-				}
-
-				console.error("Erro de sintaxe");					
-			}
-
-			
-
-			function newProp() {
-				return {color : stackProperties[0].color};
-			}
-
-			function parser(content, index){
-				var p = new newProp();							
-				var token = getToken(content, index);
-				if (token.strToken = "\\color") {
-					var parameter = getParameter(content, token.indexEnd);					
-					p.color = parameter.strToken;
-				}
-
-				var conteudo = getContent(content, parameter.indexEnd);
-
-				return {Content : conteudo,  Position : conteudo.indexEnd + 1, Prop : p};
-			}
-
-			function addStack(prop, indexEndStack) {
-				stackProperties.unshift(prop);
-				stack.unshift(indexEndStack);
-			}
-
-			function write(el, str, timeout, callInit, callback) {
+			function write(el, str, timeout, speed, callInit, callback) {
 				var position = 0;
 				setTimeout(function() {
 					if(typeof(callInit) == 'function')
@@ -126,35 +63,54 @@
 						}
 
 						var char = str[position] == '\n' ? '<br>' : str[position];
-						el.innerHTML += `${char}`;
-
-						if (stack.length > 0) {
-							if (stack[0] == position){
-								stackProperties.shift();
-								stack.shift();
-							}
-						}
-
+						el.innerHTML += `<span>${char}</span>`;
+						el.children[el.children]
 						position++;
 						if(position == str.length) {
 							clearInterval(idInterval);
 							if(typeof(callback) == 'function')
 								callback();
 						}
-					}, 80);
+					}, speed || 75);
 				}, timeout);
 
 				return position;
 			}
 
+			function erase(el, size, timeout, speed, callback) {
+				var amountErase = 0;
+				setTimeout(function() {
+					var idInterval = setInterval(function() {
+						el.children[(el.children.length - 1)].remove();
+						amountErase++;
+						if(amountErase == size) {
+							clearInterval(idInterval);
+							if(callback && typeof(callback) == 'function')
+								callback();
+						}
+					}, speed || 75);
+				}, timeout);
+			}
+
 			function writeListText(el, objStr, callInit, callback, position) {
 				position = position ? position : 0;
 
-				write(el, objStr[position].text, objStr[position].timeout, callInit, function() {
+				write(el, objStr[position].text, objStr[position].timeout, objStr[position].speed, callInit, function() {
+					var objErase = objStr[position].erase || null;
+
 					callback();
-					position++;
-					if(objStr[position])
-						writeListText(el, objStr, callInit, callback, position);
+					if(objErase) {
+						erase(el, objErase.size, objErase.timeout, objErase.speed, function() {
+							position++;
+							if(objStr[position])
+								writeListText(el, objStr, callInit, callback, position);
+						});
+					}
+					else {
+						position++;
+						if(objStr[position])
+							writeListText(el, objStr, callInit, callback, position);
+					}
 				});
 			}
 
@@ -183,7 +139,7 @@
 	<body>
 		<main>
 			<article id="cmd">
-				<span>k</span>
+				<span>k></span>
 				<span id="txt"></span>
 				<span id="pointer" class="animation">▍</span>
 			</article>	
