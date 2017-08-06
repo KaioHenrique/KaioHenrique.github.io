@@ -66,15 +66,29 @@
 				}, timeout);
 			}
 
-			window.onload = function() {
-				var el = document.getElementById('txt');
-				write(el, 'Olá! Eu sou o Kaio e este é o meu currículo!', 3000,
-					function() {
-						document.getElementById('pointer').classList.remove('animation');
-					},
-					function() {
-						document.getElementById('pointer').classList.add('animation');				
+			function writeListText(el, objStr, callInit, callback, position) {
+				position = position ? position : 0;
+
+				write(el, objStr[position].text, objStr[position].timeout, callInit, function() {
+					callback();
+					position++;
+					if(objStr[position])
+						writeListText(el, objStr, callInit, callback, position);
 				});
+			}
+
+			window.onload = function() {
+				var el = document.getElementById('txt'),
+					objStr = [
+						{text: 'Olá!', timeout: 500},
+						{text: 'Eu sou o Kaio', timeout: 1000},
+						{text: ' e este é o meu currículo!', timeout: 1000}
+					];
+				
+				writeListText(el, objStr,
+					function() { document.getElementById('pointer').classList.remove('animation'); },
+					function() { document.getElementById('pointer').classList.add('animation'); }
+				);
 			}
 		</script>
 	</head>
