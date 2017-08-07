@@ -2,6 +2,8 @@
 <html>
 	<head>
 		<title>Kaio Henrique de Melo Chiarato</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 		<style type="text/css">
 			@-webkit-keyframes pointer-animation {
 				from { opacity: 0; }
@@ -18,7 +20,7 @@
 				width: 100%;
 				height: 100%;
 				background-color: #000000;
-				font-size: 16px;
+				font-size: 14px;
 				margin: 0px !important;
 				color: green;
 			}
@@ -29,7 +31,7 @@
 
 			#cmd {
 				padding: 15px;
-				font-family: 'Consolas';
+				font-family: 'Roboto Mono', monospace;
 				font-size: 0;
 			}
 
@@ -53,11 +55,15 @@
 
 			function getToken(content, index) {
 				var token = "";
-				do {
-					token += content[index];
-					index++;
-				} while (content[index] != "(" && content[index] != "\\" && content[index] != "{");
-				return { strToken : token, indexEnd : index - 1};
+				if (content[index] == "\\") {
+					do {
+						token += content[index];
+						index++;
+					} while (content[index] != "(" && content[index] != "\\" && content[index] != "{");
+					return { strToken : token, indexEnd : index - 1};	
+				} else {
+					return undefined;	
+				}				
 			}
 
 			function getParameter(content, index) {
@@ -91,16 +97,31 @@
 			
 
 			function newProp() {
-				return {color : stackProperties[0].color};
+				return {color : stackProperties[0].color, background : stackProperties[0].background};
 			}
 
+
 			function parser(content, index){
-				var p = new newProp();							
-				var token = getToken(content, index);
-				if (token.strToken = "\\color") {
-					var parameter = getParameter(content, token.indexEnd);					
-					p.color = parameter.strToken;
-				}
+				var p = new newProp();	
+
+				var parameter;
+				var token;
+				do {
+					token = getToken(content, !parameter ? index : parameter.indexEnd + 1);
+					if (token != undefined){						
+						if (token.strToken == "\\color") {
+							parameter = getParameter(content, token.indexEnd);					
+							p.color = parameter.strToken;							
+					
+						} else if (token.strToken == "\\background") {
+							parameter = getParameter(content, token.indexEnd);					
+							p.background = parameter.strToken;							
+						}	
+					} else {
+						break;
+					}					
+				} while(true);
+				
 
 				var conteudo = getContent(content, parameter.indexEnd);
 
@@ -112,6 +133,8 @@
 				stack.unshift(indexEndStack);
 			}
 
+			var fator = 1;
+
 			function write(el, str, timeout, speed, callInit, callback) {
 				var position = 0;
 				setTimeout(function() {
@@ -120,16 +143,20 @@
 
 					var idInterval = setInterval(function() {
 
-						if (str[position] == "@"){
+						if (str[position] == "$"){
 							var parsed = parser(str, position + 1);													
 							var comando = str.substr(position, parsed.Position - position);
 							str = str.replace(comando, parsed.Content.strToken);	
 							addStack(parsed.Prop, parsed.Content.strToken.length +  position);
 						}
 
-						var char = str[position] == '\n' ? '<br>' : str[position];
+						var char = str && str.length > 0 ?  (str[position] == '\n' ? '<br>' : str[position]) : '';
+						
 						el.innerHTML += `<span>${char}</span>`;
+						el.children[el.children.length - 1].style.color = stackProperties[0].color;
+						el.children[el.children.length - 1].style.background = stackProperties[0].background;
 
+						position++;
 						if (stack.length > 0) {
 							if (stack[0] == position){
 								stackProperties.shift();
@@ -137,14 +164,14 @@
 							}
 						}
 
-						position++;
+						
 						if(position == str.length) {
 							clearInterval(idInterval);
 							if(typeof(callback) == 'function')
 								callback();
 						}
-					}, speed || 75);
-				}, timeout);
+					}, (speed || 30) * fator);
+				}, timeout * fator);
 			}
 
 			function erase(el, size, timeout, speed, callback) {
@@ -158,28 +185,32 @@
 							if(callback && typeof(callback) == 'function')
 								callback();
 						}
-					}, speed || 75);
-				}, timeout);
+					}, (speed || 75) * fator);
+				}, timeout * fator);
 			}
 
-			function writeListText(el, objStr, callInit, callback, position) {
+			function writeListText(el, objStr, callInit, callback, position, last) {
 				position = position ? position : 0;
 
 				write(el, objStr[position].text, objStr[position].timeout, objStr[position].speed, callInit, function() {
 					var objErase = objStr[position].erase || null;
 
 					callback();
+
 					if(objErase) {
 						erase(el, objErase.size, objErase.timeout, objErase.speed, function() {
 							position++;
 							if(objStr[position])
-								writeListText(el, objStr, callInit, callback, position);
+								writeListText(el, objStr, callInit, callback, position, last);
+							else
+								last();
 						});
-					}
-					else {
+					} else {
 						position++;
 						if(objStr[position])
-							writeListText(el, objStr, callInit, callback, position);
+							writeListText(el, objStr, callInit, callback, position, last);
+						else
+							last();
 					}
 				});
 			}
@@ -187,26 +218,71 @@
 			var stack = [];
 			var stackProperties = [];
 
-			window.onload = function() {
-				stackProperties.unshift({color : "green"});
-				var el = document.getElementById('txt'),
-					objStr = [
-						{text: 'Olá! @\\color(#000000){Kaio Henrique de Melo Chiarato} Blah blah blah', timeout: 500},
-						{text: 'Eu sou o Kaio', timeout: 1000},
-						{text: ' e este é o meu currículo!', timeout: 1000}
-					];
-				
-				writeListText(el, objStr,
-					function() { document.getElementById('pointer').classList.remove('animation'); },
-					function() { document.getElementById('pointer').classList.add('animation'); }
-				);
+
+			function writeRecursive(el, assinatura, vetor, index) {
+				if (index < vetor.length){
+					write(el, vetor[index].assinatura ? '\n' + assinatura : '\n ', 0.01, 0.01, function() {}, function() {
+						writeListText(el, vetor[index].conteudo,
+							function() { document.getElementById('pointer').classList.remove('animation'); },
+							function() { document.getElementById('pointer').classList.add('animation'); },
+							0,
+							function() {  writeRecursive(el,  assinatura, vetor, index + 1) }
+						);
+					});	
+				}				
 			}
+
+			window.onload = function() {
+				stackProperties.unshift({color : "green", background : "black"});
+				var el = document.getElementById('txt');
+				var assinatura = "kaio@enterprise-1701: ~ >";
+
+				var intro = [
+					{text: ' Olá!', timeout: 4000,  speed: 75},
+					{text: ' Eu me chamo $\\color(white)\\background(red)\\color(yellow){Kaio}.', timeout: 1500,  speed: 75},
+					{text: ' Seja bem vindo ao meu currículo.', timeout: 1000,  speed: 75},
+					{text: ' ', timeout: 1, erase: {size: 57, timeout: 4000, speed: 20},  speed: 75},
+					{text: '.\\resumo', timeout: 1000,  speed: 90}
+				];
+
+				var resumo = [
+					{text: '$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
+					{text: '\nKAIO HENRIQUE DE MELO CHIARATO', timeout: 1},
+					{text: '\n22 ANOS, $\\color(green)\\background(yellow){BRASILEIRO}', timeout: 1},					
+					{text: '\nBARRETOS-SP', timeout: 1}
+				];
+
+				var formacao = [
+					{text: '.\\formacao', timeout: 2000, speed: 90},
+					{text: '\n$\\background(red)\\color(white){[FORMAÇÃO]}', timeout: 1000},
+					{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO (IFSP)', timeout: 50}
+				];
+
+				var qualificacoes = [
+					{text: '.\\qualificacoes', timeout: 2000, speed: 90},
+					{text: '\n$\\background(red)\\color(white){[QUALIFICAÇÕES]}', timeout: 1000},
+				];
+				
+
+				var vetor = [	
+					{assinatura : true, conteudo: intro},
+					{assinatura : false, conteudo: resumo},
+					{assinatura : true, conteudo: formacao},
+					{assinatura : true, conteudo: qualificacoes}					
+				];
+
+				writeRecursive(el, assinatura, vetor, 0);
+				
+				
+			}
+
+
+
 		</script>
 	</head>
 	<body>
 		<main>
-			<article id="cmd">
-				<span>k></span>
+			<article id="cmd">				
 				<span id="txt"></span>
 				<span id="pointer" class="animation">▍</span>
 			</article>	
