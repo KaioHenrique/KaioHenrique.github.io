@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Kaio Henrique de Melo Chiarato</title>
+		<title>\curriculo</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+		<link rel="shortcut icon" type="image/png" href="./images/favicon.png"/>
 		<style type="text/css">
 			@-webkit-keyframes pointer-animation {
 				from { opacity: 0; }
@@ -235,23 +236,32 @@
 			window.onload = function() {
 				stackProperties.unshift({color : "green", background : "black"});
 				var el = document.getElementById('txt');
-				var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: ~ >";
+				var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: \\currículo >";
 
 				var intro = [
 					{text: ' Olá!', timeout: 4000,  speed: 80},
 					{text: ' Eu me chamo $\\color(white)\\background(red)\\color(yellow){Kaio}.', timeout: 1500,  speed: 80},
 					{text: ' Seja bem vindo ao meu currículo.', timeout: 1000,  speed: 80},
 					{text: ' ', timeout: 1, erase: {size: 57, timeout: 4000, speed: 35},  speed: 80},
-					{text: '.\\resumo', timeout: 1000,  speed: 90}
+					{text: 'ls', timeout: 1000,  speed: 90},
+				];
+
+				var ls = [
+					{text: 'resumo', timeout: 1,  speed: 1},	
+					{text: '\nformacao', timeout: 1,  speed: 1},	
+					{text: '\nqualificacoes', timeout: 1,  speed: 1}
 				];
 
 				var resumo = [
-					{text: '$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
+					{text: '.\\resumo', timeout: 1000,  speed: 90},
+					{text: '\n$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
 					{text: '\nKAIO HENRIQUE DE MELO CHIARATO', timeout: 1},
 					{text: '\n22 ANOS, $\\color(green)\\background(yellow){BRASILEIRO}', timeout: 1},					
 					{text: '\nBARRETOS-SP', timeout: 1}
 				];
 
+
+				//TODO - dir para listar os campos
 				var formacao = [
 					{text: '.\\formacao', timeout: 2000, speed: 90},
 					{text: '\n$\\background(red)\\color(white){[FORMAÇÃO]}', timeout: 1000},
@@ -266,7 +276,8 @@
 
 				var vetor = [	
 					{assinatura : true, conteudo: intro},
-					{assinatura : false, conteudo: resumo},
+					{assinatura : false, conteudo: ls},
+					{assinatura : true, conteudo: resumo},
 					{assinatura : true, conteudo: formacao},
 					{assinatura : true, conteudo: qualificacoes}					
 				];
