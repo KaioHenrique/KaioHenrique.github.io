@@ -30,7 +30,7 @@
 			}
 
 			#cmd {
-				padding: 15px;
+				padding: 5px;
 				font-family: 'Roboto Mono', monospace;
 				font-size: 0;
 			}
@@ -221,7 +221,7 @@
 
 			function writeRecursive(el, assinatura, vetor, index) {
 				if (index < vetor.length){
-					write(el, vetor[index].assinatura ? '\n' + assinatura : '\n ', 0.01, 0.01, function() {}, function() {
+					write(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 0.01, 0.01, function() {}, function() {
 						writeListText(el, vetor[index].conteudo,
 							function() { document.getElementById('pointer').classList.remove('animation'); },
 							function() { document.getElementById('pointer').classList.add('animation'); },
@@ -235,7 +235,7 @@
 			window.onload = function() {
 				stackProperties.unshift({color : "green", background : "black"});
 				var el = document.getElementById('txt');
-				var assinatura = "kaio@enterprise-1701: ~ >";
+				var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: ~ >";
 
 				var intro = [
 					{text: ' Olá!', timeout: 4000,  speed: 75},
