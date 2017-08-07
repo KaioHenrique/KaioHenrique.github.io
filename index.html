@@ -221,7 +221,7 @@
 
 			function writeRecursive(el, assinatura, vetor, index) {
 				if (index < vetor.length){
-					write(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 1, 1, function() {}, function() {
+					write(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 0, -1, function() {}, function() {
 						writeListText(el, vetor[index].conteudo,
 							function() { document.getElementById('pointer').classList.remove('animation'); },
 							function() { document.getElementById('pointer').classList.add('animation'); },
