@@ -253,7 +253,7 @@ window.onload = function() {
 	var formacao = [
 		{text: '.\\formacao', timeout: 2000, speed: 90},
 		{text: '\n$\\background(red)\\color(white){[FORMAÇÃO]}', timeout: 1000},
-		{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO ($\\color(cyan){IFSP})', timeout: 50}
+		{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO ($\\color(blue){IFSP ♥})', timeout: 50}
 	];
 
 	var qualificacoes = [
