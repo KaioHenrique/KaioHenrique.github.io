@@ -33,7 +33,7 @@
 
 			#cmd {
 				padding: 5px;
-				font-family: 'Roboto Mono', monospace;
+				font-family: 'Consolas', monospace;
 				font-size: 0;
 			}
 
@@ -262,7 +262,7 @@
 					function fnEnd() {document.getElementById('pointer').classList.add('animation'); };
 					function fnEndList() {  writeRecursive(el,  assinatura, vetor, index + 1); };
 
-					writeSlowly(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 0, -1, function() {}, function() {
+					writeSlowly(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 1, 1, function() {}, function() {
 						writeListText(el, vetor[index].conteudo,
 							fnInit,
 							fnEnd,
@@ -332,6 +332,14 @@
 				
 			}
 
+
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+			  ga('create', 'UA-104209935-1', 'auto');
+			  ga('send', 'pageview');
 
 
 		</script>
