@@ -1,0 +1,276 @@
+function getToken(content, index) {
+	var token = "";
+	if (content[index] == "\\") {
+		do {
+			token += content[index];
+			index++;
+		} while (content[index] != "(" && content[index] != "\\" && content[index] != "{");
+		return { strToken : token, indexEnd : index - 1};	
+	} else {
+		return undefined;	
+	}				
+}
+
+function getParameter(content, index) {
+	var token = "";
+	index++;
+	if (content[index] == "("){
+		do {
+			token += content[index];
+			index++;
+		} while (content[index] != ")");
+		return { strToken : token.substring(1), indexEnd : index};	
+	}
+
+	console.error("Erro de sintaxe");				
+}
+
+function getContent(content, index) {
+	var token = "";
+	index++;
+	if (content[index] == "{"){
+		do {
+			token += content[index];
+			index++;
+		} while (content[index] != "}");
+		return { strToken : token.substring(1), indexEnd : index};	
+	}
+
+	console.error("Erro de sintaxe");					
+}
+
+
+
+function newProp() {
+	return {color : stackProperties[0].color, background : stackProperties[0].background};
+}
+
+
+function parser(content, index){
+	var p = new newProp();	
+
+	var parameter;
+	var token;
+	do {
+		token = getToken(content, !parameter ? index : parameter.indexEnd + 1);
+		if (token != undefined){						
+			if (token.strToken == "\\color") {
+				parameter = getParameter(content, token.indexEnd);					
+				p.color = parameter.strToken;							
+		
+			} else if (token.strToken == "\\background") {
+				parameter = getParameter(content, token.indexEnd);					
+				p.background = parameter.strToken;							
+			}	
+		} else {
+			break;
+		}					
+	} while(true);
+	
+
+	var conteudo = getContent(content, parameter.indexEnd);
+
+	return {Content : conteudo,  Position : conteudo.indexEnd + 1, Prop : p};
+}
+
+function createSpan(el) {
+	var span = document.createElement('span');
+	el.appendChild(span);
+	stackSpan.unshift(span);
+}
+
+function addStack(el, prop, indexEndStack) {
+	stackProperties.unshift(prop);
+	stack.unshift(indexEndStack);			
+	createSpan(el);
+}
+
+var fator = 0.7;
+
+var stackSpan = [];
+
+function writeSlowly(el, str, timeout, speed, callInit, callback) {
+	var position = 0;
+	setTimeout(function() {
+		if(typeof(callInit) == 'function')
+			callInit();
+
+		var idInterval = setInterval(function() {
+
+			if (str[position] == "$"){
+				var parsed = parser(str, position + 1);													
+				var comando = str.substr(position, parsed.Position - position);
+				str = str.replace(comando, parsed.Content.strToken);	
+				addStack(el, parsed.Prop, parsed.Content.strToken.length +  position);
+			}
+
+			var char = str && str.length > 0 ?  (str[position] == '\n' ? '<br>' : str[position]) : '';
+			
+			if (stackSpan.length <=  0)
+				createElement(el);
+
+			var span = stackSpan[0];
+
+			span.innerHTML += char;
+			span.style.color = stackProperties[0].color;
+			span.style.background = stackProperties[0].background;
+
+			position++;
+			if (stack.length > 0) {
+				if (stack[0] == position){
+					stackProperties.shift();
+					stack.shift();
+					createSpan(el);
+				}
+			}
+
+			
+			if(position == str.length) {
+				clearInterval(idInterval);
+				if(typeof(callback) == 'function')
+					callback();
+			}
+		}, (speed || 30) * fator);
+	}, timeout * fator);
+}
+
+function erase(el, size, timeout, speed, callback) {
+	var amountErase = 0;
+	setTimeout(function() {
+		var idInterval = setInterval(function() {
+			
+			var span = stackSpan[0];
+			if (span.innerHTML.length <= 0){
+				stackSpan.shift();
+			} else {
+				span.innerHTML = span.innerHTML.slice(0, -1);
+			}
+		
+			amountErase++;
+			if(amountErase == size) {
+				clearInterval(idInterval);
+				if(callback && typeof(callback) == 'function')
+					callback();
+			}
+		}, (speed || 75) * fator);
+	}, timeout * fator);
+}
+
+function write(el, objStr, callInit, callback){
+	if(typeof(callInit) == 'function')
+			callInit();
+
+	var span = stackSpan[0];
+
+	span.innerHTML += objStr;
+
+	if(typeof(callback) == 'function')
+		callback();
+}
+
+function writeListText(el, objStr, callInit, callback, position, last) {
+	position = position ? position : 0;
+
+	writeSlowly(el, objStr[position].text, objStr[position].timeout, objStr[position].speed, callInit, function() {
+		var objErase = objStr[position].erase || null;
+
+		callback();
+
+		if(objErase) {
+			erase(el, objErase.size, objErase.timeout, objErase.speed, function() {
+				position++;
+				if(objStr[position])
+					writeListText(el, objStr, callInit, callback, position, last);
+				else
+					last();
+			});
+		} else {
+			position++;
+			if(objStr[position])
+				writeListText(el, objStr, callInit, callback, position, last);
+			else
+				last();
+		}
+	});
+}
+
+var stack = [];
+var stackProperties = [];
+
+
+function writeRecursive(el, assinatura, vetor, index) {
+	if (index < vetor.length){
+
+		function fnInit() { document.getElementById('pointer').classList.remove('animation'); };
+		function fnEnd() {document.getElementById('pointer').classList.add('animation'); };
+		function fnEndList() {  writeRecursive(el,  assinatura, vetor, index + 1); };
+
+		writeSlowly(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 1, 1, function() {}, function() {
+			writeListText(el, vetor[index].conteudo,
+				fnInit,
+				fnEnd,
+				0,
+				fnEndList
+			);
+		});	
+	}				
+}
+
+
+
+window.onload = function() {
+	stackProperties.unshift({color : "green", background : "black"});
+	stackSpan.unshift(document.createElement('span'));
+
+	var el = document.getElementById('txt');
+	el.appendChild(stackSpan[0]);
+	var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: \\currículo >";
+
+	var intro = [
+		{text: ' Olá!', timeout: 4000,  speed: 80},
+		{text: ' Eu me chamo $\\color(white)\\background(red)\\color(yellow){Kaio}.', timeout: 1500,  speed: 80},
+		{text: ' Seja bem vindo ao meu currículo.', timeout: 1000,  speed: 80},
+		{text: ' ', timeout: 1, erase: {size: 58, timeout: 4000, speed: 35},  speed: 80},
+		{text: 'ls', timeout: 1000,  speed: 90, computer: true},
+	];
+
+	var ls = [
+		{text: 'resumo', timeout: 1,  speed: 1},	
+		{text: '\nformacao', timeout: 1,  speed: 1},	
+		{text: '\nqualificacoes', timeout: 1,  speed: 1}
+	];
+
+	var resumo = [
+		{text: '.\\resumo', timeout: 1000,  speed: 90},
+		{text: '\n$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
+		{text: '\nKAIO HENRIQUE DE MELO CHIARATO', timeout: 1},
+		{text: '\n22 ANOS, $\\color(green)\\background(yellow){BRASILEIRO}', timeout: 1},					
+		{text: '\nBARRETOS-SP', timeout: 1}
+	];
+
+
+	//TODO - dir para listar os campos
+	var formacao = [
+		{text: '.\\formacao', timeout: 2000, speed: 90},
+		{text: '\n$\\background(red)\\color(white){[FORMAÇÃO]}', timeout: 1000},
+		{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO (IFSP)', timeout: 50}
+	];
+
+	var qualificacoes = [
+		{text: '.\\qualificacoes', timeout: 2000, speed: 90},
+		{text: '\n$\\background(red)\\color(white){[QUALIFICAÇÕES]}', timeout: 1000},
+	];
+	
+
+	var vetor = [	
+		{assinatura : true, conteudo: intro},
+		{assinatura : false, conteudo: ls},
+		{assinatura : true, conteudo: resumo},
+		{assinatura : true, conteudo: formacao},
+		{assinatura : true, conteudo: qualificacoes}					
+	];
+
+	writeRecursive(el, assinatura, vetor, 0);
+	
+	
+}
