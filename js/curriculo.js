@@ -235,9 +235,9 @@ window.onload = function() {
 	];
 
 	var ls = [
-		{text: 'resumo', timeout: 1,  speed: 1},	
-		{text: '\nformacao', timeout: 1,  speed: 1},	
-		{text: '\nqualificacoes', timeout: 1,  speed: 1}
+		{text: '$\\color(cyan){resumo}', timeout: 1,  speed: 1},	
+		{text: '\n$\\color(cyan){formacao}', timeout: 1,  speed: 1},	
+		{text: '\n$\\color(cyan){qualificacoes}', timeout: 1,  speed: 1}
 	];
 
 	var resumo = [
@@ -253,7 +253,7 @@ window.onload = function() {
 	var formacao = [
 		{text: '.\\formacao', timeout: 2000, speed: 90},
 		{text: '\n$\\background(red)\\color(white){[FORMAÇÃO]}', timeout: 1000},
-		{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO (IFSP)', timeout: 50}
+		{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO ($\\color(cyan){IFSP})', timeout: 50}
 	];
 
 	var qualificacoes = [
