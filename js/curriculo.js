@@ -287,7 +287,7 @@ window.onload = function() {
   
   	var academico = [
 		{text: '.\\academico', timeout: 2000, speed: 90},
-		
+		{text: '\n$\\background(red)\\color(white){[ACADÊMICO]}', timeout: 1000},
      	{text: '\n1. Desenvolvimento de um algoritmo para correção de gabaritos de múltipla escolha através de técnicas de processamento de imagens. (publicado)', timeout: 1, speed: 1},
       
       	{text: '\n2. Projeto de Módulo de Processamento Digital de Imagens em Linguagem de Descrição de Hardware. ($\\color(red){não publicado})', timeout: 1, speed: 1}      	            
