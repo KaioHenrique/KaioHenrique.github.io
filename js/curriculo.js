@@ -85,7 +85,7 @@ function addStack(el, prop, indexEndStack) {
 	createSpan(el);
 }
 
-var fator = 0.5;
+var fator = 0.1;
 
 var stackSpan = [];
 
@@ -231,7 +231,7 @@ window.onload = function() {
 		{text: ' Eu me chamo $\\color(white)\\background(red)\\color(yellow){Kaio}.', timeout: 1500,  speed: 80},
 		{text: ' Seja bem vindo ao meu currículo.', timeout: 1000,  speed: 80},
 		{text: ' ', timeout: 1, erase: {size: 58, timeout: 4000, speed: 35},  speed: 80},
-		{text: 'ls', timeout: 1000,  speed: 90, computer: true},
+		{text: 'ls', timeout: 1000,  speed: 90, computer: true}
 	];
 
 	var ls = [
@@ -239,6 +239,7 @@ window.onload = function() {
 		{text: '\n$\\color(cyan){formacao}', timeout: 1,  speed: 1},	
 		{text: '\n$\\color(cyan){habilidades}', timeout: 1,  speed: 1},
 		{text: '\n$\\color(cyan){experiencia}', timeout: 1,  speed: 1},
+      	{text: '\n$\\color(cyan){academico}', timeout: 1,  speed: 1},
 	];
 
 	var resumo = [
@@ -281,7 +282,15 @@ window.onload = function() {
 		{text: '\n$\\background(red)\\color(white){[EXPERIÊNCIAS]}', timeout: 1000},
       	{text: '\n$\\background(pink){[APRENDE MAIS]} - BARRETOS/SP', timeout: 1, speed: 1},
       	{text: '\nADMISSÃO EM JULHO/2016: ', timeout: 1, speed: 1},
-      	{text: '\nDESENVOLVIMENTO EM: $\\color(red){[JAVA]}, $\\color(red){[ACTIONSCRIPT]}, $\\color(red){[C#]}, $\\color(red){[PHP]}', timeout: 1, speed: 1},            
+      	{text: '\nDESENVOLVIMENTO EM: $\\color(red){[JAVA]}, $\\color(red){[ACTIONSCRIPT]}, $\\color(red){[C#]}, $\\color(red){[PHP]}', timeout: 1, speed: 1}            
+	];
+  
+  	var academico = [
+		{text: '.\\academico', timeout: 2000, speed: 90},
+		
+     	{text: '\n1. Desenvolvimento de um algoritmo para correção de gabaritos de múltipla escolha através de técnicas de processamento de imagens. (publicado)', timeout: 1, speed: 1},
+      
+      	{text: '\n2. Projeto de Módulo de Processamento Digital de Imagens em Linguagem de Descrição de Hardware. ($\\color(red){não publicado})', timeout: 1, speed: 1}      	            
 	];
 	
 
@@ -292,6 +301,7 @@ window.onload = function() {
 		{assinatura : true, conteudo: formacao},
 		{assinatura : true, conteudo: habilidades},
 		{assinatura : true, conteudo: experiencia},
+      	{assinatura : true, conteudo: academico}
 		
 	];
 
