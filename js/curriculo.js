@@ -237,7 +237,8 @@ window.onload = function() {
 	var ls = [
 		{text: '$\\color(cyan){resumo}', timeout: 1,  speed: 1},	
 		{text: '\n$\\color(cyan){formacao}', timeout: 1,  speed: 1},	
-		{text: '\n$\\color(cyan){qualificacoes}', timeout: 1,  speed: 1}
+		{text: '\n$\\color(cyan){habilidades}', timeout: 1,  speed: 1},
+		{text: '\n$\\color(cyan){experiencia}', timeout: 1,  speed: 1},
 	];
 
 	var resumo = [
