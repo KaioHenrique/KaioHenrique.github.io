@@ -85,7 +85,7 @@ function addStack(el, prop, indexEndStack) {
 	createSpan(el);
 }
 
-var fator = 0.1;
+var fator = 0.6;
 
 var stackSpan = [];
 
@@ -305,7 +305,5 @@ window.onload = function() {
 		
 	];
 
-	writeRecursive(el, assinatura, vetor, 0);
-	
-	
+	writeRecursive(el, assinatura, vetor, 0);		
 }
