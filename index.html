@@ -5,6 +5,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 		<link rel="shortcut icon" type="image/png" href="./images/favicon.png"/>
+		<meta name="theme-color" content="#000000">
 		<style type="text/css">
 			@-webkit-keyframes pointer-animation {
 				from { opacity: 0; }
@@ -129,14 +130,23 @@
 				return {Content : conteudo,  Position : conteudo.indexEnd + 1, Prop : p};
 			}
 
-			function addStack(prop, indexEndStack) {
-				stackProperties.unshift(prop);
-				stack.unshift(indexEndStack);
+			function createSpan(el) {
+				var span = document.createElement('span');
+				el.appendChild(span);
+				stackSpan.unshift(span);
 			}
 
-			var fator = 1;
+			function addStack(el, prop, indexEndStack) {
+				stackProperties.unshift(prop);
+				stack.unshift(indexEndStack);			
+				createSpan(el);
+			}
 
-			function write(el, str, timeout, speed, callInit, callback) {
+			var fator = 0.4;
+
+			var stackSpan = [];
+
+			function writeSlowly(el, str, timeout, speed, callInit, callback) {
 				var position = 0;
 				setTimeout(function() {
 					if(typeof(callInit) == 'function')
@@ -148,20 +158,26 @@
 							var parsed = parser(str, position + 1);													
 							var comando = str.substr(position, parsed.Position - position);
 							str = str.replace(comando, parsed.Content.strToken);	
-							addStack(parsed.Prop, parsed.Content.strToken.length +  position);
+							addStack(el, parsed.Prop, parsed.Content.strToken.length +  position);
 						}
 
 						var char = str && str.length > 0 ?  (str[position] == '\n' ? '<br>' : str[position]) : '';
 						
-						el.innerHTML += `<span>${char}</span>`;
-						el.children[el.children.length - 1].style.color = stackProperties[0].color;
-						el.children[el.children.length - 1].style.background = stackProperties[0].background;
+						if (stackSpan.length <=  0)
+							createElement(el);
+
+						var span = stackSpan[0];
+
+						span.innerHTML += char;
+						span.style.color = stackProperties[0].color;
+						span.style.background = stackProperties[0].background;
 
 						position++;
 						if (stack.length > 0) {
 							if (stack[0] == position){
 								stackProperties.shift();
 								stack.shift();
+								createSpan(el);
 							}
 						}
 
@@ -179,7 +195,14 @@
 				var amountErase = 0;
 				setTimeout(function() {
 					var idInterval = setInterval(function() {
-						el.children[(el.children.length - 1)].remove();
+						
+						var span = stackSpan[0];
+						if (span.innerHTML.length <= 0){
+							stackSpan.shift();
+						} else {
+							span.innerHTML = span.innerHTML.slice(0, -1);
+						}
+					
 						amountErase++;
 						if(amountErase == size) {
 							clearInterval(idInterval);
@@ -190,10 +213,22 @@
 				}, timeout * fator);
 			}
 
+			function write(el, objStr, callInit, callback){
+				if(typeof(callInit) == 'function')
+						callInit();
+
+				var span = stackSpan[0];
+
+				span.innerHTML += objStr;
+
+				if(typeof(callback) == 'function')
+					callback();
+			}
+
 			function writeListText(el, objStr, callInit, callback, position, last) {
 				position = position ? position : 0;
 
-				write(el, objStr[position].text, objStr[position].timeout, objStr[position].speed, callInit, function() {
+				writeSlowly(el, objStr[position].text, objStr[position].timeout, objStr[position].speed, callInit, function() {
 					var objErase = objStr[position].erase || null;
 
 					callback();
@@ -222,28 +257,38 @@
 
 			function writeRecursive(el, assinatura, vetor, index) {
 				if (index < vetor.length){
-					write(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 0, -1, function() {}, function() {
+
+					function fnInit() { document.getElementById('pointer').classList.remove('animation'); };
+					function fnEnd() {document.getElementById('pointer').classList.add('animation'); };
+					function fnEndList() {  writeRecursive(el,  assinatura, vetor, index + 1); };
+
+					writeSlowly(el, vetor[index].assinatura ? (index > 0 ? '\n' : '') + assinatura : '\n ', 0, -1, function() {}, function() {
 						writeListText(el, vetor[index].conteudo,
-							function() { document.getElementById('pointer').classList.remove('animation'); },
-							function() { document.getElementById('pointer').classList.add('animation'); },
+							fnInit,
+							fnEnd,
 							0,
-							function() {  writeRecursive(el,  assinatura, vetor, index + 1) }
+							fnEndList
 						);
 					});	
 				}				
 			}
 
+
+
 			window.onload = function() {
 				stackProperties.unshift({color : "green", background : "black"});
+				stackSpan.unshift(document.createElement('span'));
+
 				var el = document.getElementById('txt');
+				el.appendChild(stackSpan[0]);
 				var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: \\currículo >";
 
 				var intro = [
 					{text: ' Olá!', timeout: 4000,  speed: 80},
 					{text: ' Eu me chamo $\\color(white)\\background(red)\\color(yellow){Kaio}.', timeout: 1500,  speed: 80},
 					{text: ' Seja bem vindo ao meu currículo.', timeout: 1000,  speed: 80},
-					{text: ' ', timeout: 1, erase: {size: 57, timeout: 4000, speed: 35},  speed: 80},
-					{text: 'ls', timeout: 1000,  speed: 90},
+					{text: ' ', timeout: 1, erase: {size: 58, timeout: 4000, speed: 35},  speed: 80},
+					{text: 'ls', timeout: 1000,  speed: 90, computer: true},
 				];
 
 				var ls = [
