@@ -224,7 +224,7 @@ window.onload = function() {
 
 	var el = document.getElementById('txt');
 	el.appendChild(stackSpan[0]);
-	var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: \\currículo >";
+	var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: /currículo >";
 
 	var intro = [
 		{text: ' Olá!', timeout: 4000,  speed: 80},
@@ -256,9 +256,28 @@ window.onload = function() {
 		{text: '\nTECNÓLOGO EM ANÁLISE E DESENVOLVIMENTO DE SISTEMAS \n INSTITUTO FEDERAL DE EDUCAÇÃO, CIÊNCIA E TECNOLOGIA DO ESTADO DE SÃO PAULO ($\\color(blue){IFSP ♥})', timeout: 50}
 	];
 
-	var qualificacoes = [
-		{text: '.\\qualificacoes', timeout: 2000, speed: 90},
-		{text: '\n$\\background(red)\\color(white){[QUALIFICAÇÕES]}', timeout: 1000},
+	var habilidades = [
+		{text: '.\\habilidades', timeout: 2000, speed: 90},
+		{text: '\n$\\background(red)\\color(white){[HABILIDADES]}', timeout: 1000},
+		{text: '\nINGLÊS INTERMEDIÁRIO',  timeout: 1,  speed: 1},
+		{text: '\nC#',  timeout: 1,  speed: 1},
+		{text: '\nC',  timeout: 1,  speed: 1},
+		{text: '\nJAVA',  timeout: 1,  speed: 1},
+		{text: '\nANDROID',  timeout: 1,  speed: 1},
+		{text: '\nJS',  timeout: 1,  speed: 1},
+		{text: '\nSCALA',  timeout: 1,  speed: 1},
+		{text: '\nHASKELL',  timeout: 1,  speed: 1},
+		{text: '\nGIT',  timeout: 1,  speed: 1},
+		{text: '\nMySQL',  timeout: 1,  speed: 1},		
+		{text: '\nSQL SERVER',  timeout: 1,  speed: 1},
+		{text: '\nLINUX',  timeout: 1,  speed: 1},
+		{text: '\nPROCESSAMENTO DE IMAGEM',  timeout: 1,  speed: 1}
+		
+	];
+	
+	var experiencia = [
+		{text: '.\\experiencia', timeout: 2000, speed: 90},
+		{text: '\n$\\background(red)\\color(white){[EXPERIÊNCIAS]}', timeout: 1000}		
 	];
 	
 
@@ -267,7 +286,9 @@ window.onload = function() {
 		{assinatura : false, conteudo: ls},
 		{assinatura : true, conteudo: resumo},
 		{assinatura : true, conteudo: formacao},
-		{assinatura : true, conteudo: qualificacoes}					
+		{assinatura : true, conteudo: habilidades},
+		{assinatura : true, conteudo: experiencia},
+		
 	];
 
 	writeRecursive(el, assinatura, vetor, 0);
