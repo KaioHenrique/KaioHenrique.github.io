@@ -85,7 +85,7 @@ function addStack(el, prop, indexEndStack) {
 	createSpan(el);
 }
 
-var fator = 0.7;
+var fator = 0.1;
 
 var stackSpan = [];
 
@@ -279,9 +279,9 @@ window.onload = function() {
 	var experiencia = [
 		{text: '.\\experiencia', timeout: 2000, speed: 90},
 		{text: '\n$\\background(red)\\color(white){[EXPERIÊNCIAS]}', timeout: 1000},
-      	{text: '\n$\\background(red){[APRENDE MAIS]} - BARRETOS/SP', timeout: 1, speed: 1},
+      	{text: '\n$\\background(pink){[APRENDE MAIS]} - BARRETOS/SP', timeout: 1, speed: 1},
       	{text: '\nADMISSÃO EM JULHO/2016: ', timeout: 1, speed: 1},
-      	{text: 'DESENVOLVIMENTO EM: $\\color(red){[JAVA]}, $\\color(red){[ACTIONSCRIPT]}, $\\color(red){[C#]}, $\\color(red){[PHP]}', timeout: 1, speed: 1},            
+      	{text: '\nDESENVOLVIMENTO EM: $\\color(red){[JAVA]}, $\\color(red){[ACTIONSCRIPT]}, $\\color(red){[C#]}, $\\color(red){[PHP]}', timeout: 1, speed: 1},            
 	];
 	
 
