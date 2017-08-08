@@ -85,7 +85,7 @@ function addStack(el, prop, indexEndStack) {
 	createSpan(el);
 }
 
-var fator = 0.1;
+var fator = 0.5;
 
 var stackSpan = [];
 
