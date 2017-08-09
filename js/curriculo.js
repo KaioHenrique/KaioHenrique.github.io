@@ -283,6 +283,8 @@ window.onload = function() {
       
       	{text: '\n2. Projeto de Módulo de Processamento Digital de Imagens em Linguagem de Descrição de Hardware. ($\\color(red){não publicado})', timeout: 1, speed: 1}      	            
 	];
+  
+  	var interacao = [];
 	
 
 	var vetor = [	
@@ -292,8 +294,8 @@ window.onload = function() {
 		{assinatura : true, conteudo: formacao},
 		{assinatura : true, conteudo: habilidades},
 		{assinatura : true, conteudo: experiencia},
-      	{assinatura : true, conteudo: academico}
-		
+      	{assinatura : true, conteudo: academico},
+      	{assinatura : true, conteudo: interacao}		
 	];
 
 	writeRecursive(el, assinatura, vetor, 0);		
