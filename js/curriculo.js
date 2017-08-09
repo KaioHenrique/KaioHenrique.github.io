@@ -115,6 +115,9 @@ function writeSlowly(el, str, timeout, speed, callInit, callback) {
 			span.style.color = stackProperties[0].color;
 			span.style.background = stackProperties[0].background;
 
+			//Desce Scroll Da Pagina automaticamente
+			document.body.scrollTop = document.body.scrollHeight;
+
 			position++;
 			if (stack.length > 0) {
 				if (stack[0] == position){
@@ -154,18 +157,6 @@ function erase(el, size, timeout, speed, callback) {
 			}
 		}, (speed || 75) * fator);
 	}, timeout * fator);
-}
-
-function write(el, objStr, callInit, callback){
-	if(typeof(callInit) == 'function')
-			callInit();
-
-	var span = stackSpan[0];
-
-	span.innerHTML += objStr;
-
-	if(typeof(callback) == 'function')
-		callback();
 }
 
 function writeListText(el, objStr, callInit, callback, position, last) {
