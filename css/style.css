@@ -1,0 +1,43 @@
+@-webkit-keyframes pointer-animation {
+	from { opacity: 0; }
+	to { opacity: 1; }
+} 
+
+@keyframes pointer-animation {
+	from { opacity: 0; }
+	to { opacity: 1; }
+}
+
+html,
+body {
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	font-size: 14px;
+	margin: 0px !important;
+	color: green;
+}
+
+* {
+	outline: none !important;
+}
+
+#cmd {
+	padding: 5px;
+	font-family: 'Roboto Mono', monospace;
+	font-size: 0;
+}
+
+#cmd > * {
+	font-size: 1rem;
+}
+
+#pointer {
+	padding: 0px;
+	
+}
+
+#pointer.animation {
+	-webkit-animation: pointer-animation 1s infinite;
+	animation: pointer-animation 1s infinite;
+}
