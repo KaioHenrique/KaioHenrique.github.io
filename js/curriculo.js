@@ -85,7 +85,7 @@ function addStack(el, prop, indexEndStack) {
 	createSpan(el);
 }
 
-var fator = 0.6;
+var fator = 0.5;
 
 var stackSpan = [];
 
@@ -236,8 +236,8 @@ window.onload = function() {
 	var resumo = [
 		{text: '.\\resumo', timeout: 1000,  speed: 90},
 		{text: '\n$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
-		{text: '\nKAIO HENRIQUE DE MELO CHIARATO', timeout: 1},
-		{text: '\nKAIO3HENRIQUEMELO@GMAIL.COM', timeout: 1},
+		{text: '\n$\\color(purple){KAIO HENRIQUE DE MELO CHIARATO}', timeout: 1},
+		{text: '\n$\\color(brown){>KAIO3HENRIQUEMELO@GMAIL.COM}', timeout: 1},
 		{text: '\n22 ANOS, $\\color(green)\\background(yellow){BRASILEIRO}', timeout: 1},					
 		{text: '\nBARRETOS-SP', timeout: 1}
 	];
