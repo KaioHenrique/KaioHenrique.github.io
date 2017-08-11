@@ -237,6 +237,7 @@ window.onload = function() {
 		{text: '.\\resumo', timeout: 1000,  speed: 90},
 		{text: '\n$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
 		{text: '\nKAIO HENRIQUE DE MELO CHIARATO', timeout: 1},
+		{text: '\nKAIO3HENRIQUEMELO@GMAIL.COM', timeout: 1},
 		{text: '\n22 ANOS, $\\color(green)\\background(yellow){BRASILEIRO}', timeout: 1},					
 		{text: '\nBARRETOS-SP', timeout: 1}
 	];
