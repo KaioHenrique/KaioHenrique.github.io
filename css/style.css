@@ -1,11 +1,11 @@
 @-webkit-keyframes pointer-animation {
-	from { opacity: 0; }
-	to { opacity: 1; }
+	0% { opacity: 0; }
+	50% { opacity: 1; }
 } 
 
 @keyframes pointer-animation {
-	from { opacity: 0; }
-	to { opacity: 1; }
+	0% { opacity: 0; }
+	50% { opacity: 1; }
 }
 
 html,
@@ -15,7 +15,7 @@ body {
 	background-color: #000000;
 	font-size: 14px;
 	margin: 0px !important;
-	color: green;
+	color: green-light;
 }
 
 * {
@@ -38,6 +38,11 @@ body {
 }
 
 #pointer.animation {
-	-webkit-animation: pointer-animation 1s infinite;
-	animation: pointer-animation 1s infinite;
+	-webkit-animation: pointer-animation step-end 1s infinite;
+	animation: pointer-animation 1s step-end infinite;
+}
+
+#pointer {
+	color: green;
+	display: inline;
 }

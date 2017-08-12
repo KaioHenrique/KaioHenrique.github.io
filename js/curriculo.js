@@ -42,7 +42,7 @@ function getContent(content, index) {
 
 
 function newProp() {
-	return {color : stackProperties[0].color, background : stackProperties[0].background};
+	return {color : stackProperties[0].color, background : stackProperties[0].background, editable : false};
 }
 
 
@@ -61,7 +61,13 @@ function parser(content, index){
 			} else if (token.strToken == "\\background") {
 				parameter = getParameter(content, token.indexEnd);					
 				p.background = parameter.strToken;							
-			}	
+			} else if (token.strToken == "\\editable") {
+				parameter = getParameter(content, token.indexEnd);				
+				p.editable = parameter.strToken == "true";
+			} else if (token.strToken == "\\tab") {
+				parameter = getParameter(content, token.indexEnd);				
+				p.tab = parameter.strToken;
+			}
 		} else {
 			break;
 		}					
@@ -114,6 +120,8 @@ function writeSlowly(el, str, timeout, speed, callInit, callback) {
 			span.innerHTML += char;
 			span.style.color = stackProperties[0].color;
 			span.style.background = stackProperties[0].background;
+			span.style.paddingLeft = stackProperties[0].tab + "px";
+			span.setAttribute("contenteditable", stackProperties[0].editable);
 
 			//Desce Scroll Da Pagina automaticamente
 			document.body.scrollTop = document.body.scrollHeight;
@@ -210,12 +218,14 @@ function writeRecursive(el, assinatura, vetor, index) {
 
 
 window.onload = function() {
-	stackProperties.unshift({color : "green", background : "black"});
+	stackProperties.unshift({color : "#00FF00", background : "black", editable : false, tab: 0});
 	stackSpan.unshift(document.createElement('span'));
 
 	var el = document.getElementById('txt');
 	el.appendChild(stackSpan[0]);
-	var assinatura = "$\\color(green){kaio}@$\\color(green){enterprise-1701}: /currículo >";
+	var assinatura = "$\\color(#00FF00){kaio}@$\\color(#00FF00){enterprise-1701}: /currículo >";
+
+
 
 	var intro = [
 		{text: ' Olá!', timeout: 4000,  speed: 80},
@@ -237,9 +247,9 @@ window.onload = function() {
 		{text: '.\\resumo', timeout: 1000,  speed: 90},
 		{text: '\n$\\background(red)\\color(white){[RESUMO]}', timeout: 1000},
 		{text: '\n$\\color(purple){KAIO HENRIQUE DE MELO CHIARATO}', timeout: 1},
-		{text: '\n$\\color(brown){>KAIO3HENRIQUEMELO@GMAIL.COM}', timeout: 1},
-		{text: '\n22 ANOS, $\\color(green)\\background(yellow){BRASILEIRO}', timeout: 1},					
-		{text: '\nBARRETOS-SP', timeout: 1}
+		{text: '\n$\\color(brown)\\tab(20){>KAIO3HENRIQUEMELO@GMAIL.COM}', timeout: 1},
+		{text: '\n$\\tab(20){22 ANOS}, $\\color(white){BRASILEIRO}', timeout: 1},					
+		{text: '\n$\\tab(20){BARRETOS-SP}', timeout: 1}
 	];
 
 
@@ -265,27 +275,29 @@ window.onload = function() {
 		{text: '\nMySQL',  timeout: 1,  speed: 1},		
 		{text: '\nSQL SERVER',  timeout: 1,  speed: 1},
 		{text: '\nLINUX',  timeout: 1,  speed: 1},
-		{text: '\nPROCESSAMENTO DE IMAGEM',  timeout: 1,  speed: 1}
-		
+		{text: '\nPROCESSAMENTO DE IMAGEM',  timeout: 1,  speed: 1}		
 	];
-	
+
+
 	var experiencia = [
 		{text: '.\\experiencia', timeout: 2000, speed: 90},
 		{text: '\n$\\background(red)\\color(white){[EXPERIÊNCIAS]}', timeout: 1000},
-      	{text: '\n$\\background(pink){[APRENDE MAIS]} - BARRETOS/SP', timeout: 1, speed: 1},
-      	{text: '\nADMISSÃO EM JULHO/2016: ', timeout: 1, speed: 1},
-      	{text: '\nDESENVOLVIMENTO EM: $\\color(red){[JAVA]}, $\\color(red){[ACTIONSCRIPT]}, $\\color(red){[C#]}, $\\color(red){[PHP]}', timeout: 1, speed: 1}            
+      	{text: '\n$\\color(pink){[APRENDE MAIS]} - BARRETOS/SP', timeout: 1, speed: 1},
+      	{text: '\n$\\tab(20){ADMISSÃO EM JULHO/2016} ', timeout: 1, speed: 1},
+      	{text: '\n$\\tab(20){DESENVOLVIMENTO EM:} $\\color(red){[JAVA]}, $\\color(red){[ACTIONSCRIPT]}, $\\color(red){[C#]}, $\\color(red){[PHP]}', timeout: 1, speed: 1}            
 	];
   
   	var academico = [
 		{text: '.\\academico', timeout: 2000, speed: 90},
 		{text: '\n$\\background(red)\\color(white){[ACADÊMICO]}', timeout: 1000},
-     	{text: '\n1. Desenvolvimento de um algoritmo para correção de gabaritos de múltipla escolha através de técnicas de processamento de imagens. (publicado)', timeout: 1, speed: 1},
+     	{text: '\n1. Desenvolvimento de um algoritmo para correção de gabaritos de múltipla\n escolha através de técnicas de processamento de imagens. (publicado)', timeout: 1, speed: 1},
       
-      	{text: '\n2. Projeto de Módulo de Processamento Digital de Imagens em Linguagem de Descrição de Hardware. ($\\color(red){não publicado})', timeout: 1, speed: 1}      	            
+      	{text: '\n2. Projeto de Módulo de Processamento Digital de Imagens em Linguagem de \nDescrição de Hardware. ($\\color(red){não publicado})', timeout: 1, speed: 1}      	            
 	];
   
-  	var interacao = [];
+  	var interacao = [
+		{text: ' ', timeout: 1, speed: 1},
+  	];
 	
 
 	var vetor = [	
@@ -295,8 +307,9 @@ window.onload = function() {
 		{assinatura : true, conteudo: formacao},
 		{assinatura : true, conteudo: habilidades},
 		{assinatura : true, conteudo: experiencia},
-      	{assinatura : true, conteudo: academico},
-      	{assinatura : true, conteudo: interacao}		
+  		{assinatura : true, conteudo: academico},
+  		{assinatura : true, conteudo: interacao}
+      			
 	];
 
 	writeRecursive(el, assinatura, vetor, 0);		
