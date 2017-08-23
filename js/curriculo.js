@@ -91,7 +91,7 @@ function addStack(el, prop, indexEndStack) {
 	createSpan(el);
 }
 
-var fator = 0.5;
+var fator = 0.3;
 
 var stackSpan = [];
 
@@ -218,12 +218,12 @@ function writeRecursive(el, assinatura, vetor, index) {
 
 
 window.onload = function() {
-	stackProperties.unshift({color : "#00FF00", background : "black", editable : false, tab: 0});
+	stackProperties.unshift({color : "#00FF00", background : "#2A2A2A", editable : false, tab: 0});
 	stackSpan.unshift(document.createElement('span'));
 
 	var el = document.getElementById('txt');
 	el.appendChild(stackSpan[0]);
-	var assinatura = "$\\color(#00FF00){kaio}@$\\color(#00FF00){enterprise-1701}: /currículo >";
+	var assinatura = ">";
 
 
 
