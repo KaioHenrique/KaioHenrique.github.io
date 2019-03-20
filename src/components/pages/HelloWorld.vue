@@ -1,7 +1,7 @@
 <template>
   <div class="cmd">      
     <a v-for="(tag, index) in tags" :key="index" :style="{'color': tag.color}">{{tag.value}}</a>
-    <div id="pointer" :class="!isWriting?'animation':''">▍</div>	
+    <div id="pointer" :class="!isCursorActive?'animation':''">▍</div>	
   </div>
 </template>
 
@@ -11,37 +11,63 @@ export default {
   data () {
     return {
       tags: [],
-      isWriting: false,
+      isCursorActive: false,
       default : {
-        color : "rgb(0,255,0)"
+        color : "rgb(0,255,0)",
+        delay: 80
       }
     }
   }, 
   methods: {
     async writeWord(word) {
-      this.isWriting = true;
+      this.isCursorActive = true;
+
       var letters = word.value.split('');
       
       for (var i = 0; i < letters.length; i++) {        
         await this.writeLetter(letters[i], word.data)
       }
-      this.isWriting = false;
+      this.isCursorActive = false;
+      return letters.length;
     }, 
 
     async writeLetter(valueToBeWritten, data) {
-      await this.sleep(data.speed || 0);
+      await this.sleep(data && data.delay ? data.delay : this.default.delay);
       this.tags.push({value: valueToBeWritten, color : data && data.color ? data.color : this.default.color});
+    },
+    async removeWords(words, data) {      
+      await this.sleep(data.waitBeforeAction || 0)
+      this.isCursorActive = true;
+      var countLetterInWords = words.reduce((total, actual) => total + actual);
+      for (var i = 0; i < countLetterInWords; i++){
+        await this.sleep(data && data.delay ? data.delay : this.default.delay);
+        this.tags.pop();
+      }    
+      this.isCursorActive = false;    
     },
 
     sleep (sleepForMS) {
       return new Promise(resolve => setTimeout(resolve, sleepForMS))
     },
+
     async writeTest() {
-      await this.writeWord({value : "Olá.", data: { speed: 80}});
-      await this.writeWord({value : "Eu me chamo ", data: { speed: 80}});
-      await this.writeWord({value : "Kaio Henrique", data: { speed: 80, color: 'red'}});
-      await this.writeWord({value : ". ", data: { speed: 80}});
-      await this.writeWord({value : "Seja bem vindo ao meu currículo", data: { speed: 80}});   
+      
+      await this.removeWords(
+        [
+          await this.writeWord({value : "Olá."})
+        ],
+      { delay : 80, waitBeforeAction: 1000} );
+
+      await this.sleep(1000);
+
+      await this.removeWords(
+        [
+          await this.writeWord({value : "Eu me chamo "}),
+          await this.writeWord({value : "Kaio Henrique", data: { delay: 80, color: 'red'}}),
+          await this.writeWord({value : ". "}),                
+          await this.writeWord({value : "Seja bem vindo ao meu currículo"})
+        ],
+      { delay : 35, waitBeforeAction: 1000 } );            
     },
   },
   
@@ -76,10 +102,6 @@ export default {
 
   .cmd > * {
     font-size: 1rem;
-  }
-
-  .letter {
-    color: rgb(0, 255, 0)
   }
 
   #pointer {
